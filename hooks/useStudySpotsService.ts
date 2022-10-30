@@ -9,8 +9,6 @@ import {
   StudySpotModel,
 } from '../types/study-spots';
 
-const { NEXT_PUBLIC_API_URL } = process.env;
-
 const formatHoursToModel = (hours: Hours): HoursModel => {
   const hourLists: HoursModel = {
     sunday: [],
@@ -83,7 +81,7 @@ const formatStudySpotToModel = (studySpot: StudySpotForm): StudySpotModel => ({
 export default function useStudySpotsService() {
   const getStudySpots = async (): Promise<StudySpotForm | undefined> => {
     try {
-      const response = await axios.get(`${NEXT_PUBLIC_API_URL}/study-spots`);
+      const response = await axios.get('api/study-spots');
       return response.data.map((studySpot: StudySpotModel) =>
         formatStudySpotFromModel(studySpot),
       );
@@ -97,10 +95,7 @@ export default function useStudySpotsService() {
     studySpot: StudySpotForm,
   ): Promise<boolean> => {
     try {
-      await axios.post(
-        `${NEXT_PUBLIC_API_URL}/study-spots`,
-        formatStudySpotToModel(studySpot),
-      );
+      await axios.post('api/study-spots', formatStudySpotToModel(studySpot));
       toast.success('Study spot successfully saved.');
       return true;
     } catch (err) {
@@ -116,7 +111,7 @@ export default function useStudySpotsService() {
   ): Promise<boolean> => {
     try {
       await axios.put(
-        `${NEXT_PUBLIC_API_URL}/study-spots/${studySpotId}`,
+        `api/study-spots/${studySpotId}`,
         formatStudySpotToModel(studySpot),
       );
       toast.success('Study spot successfully updated.');
@@ -130,7 +125,7 @@ export default function useStudySpotsService() {
 
   const deleteStudySpot = async (studySpotId: string): Promise<boolean> => {
     try {
-      await axios.delete(`${NEXT_PUBLIC_API_URL}/study-spots/${studySpotId}`);
+      await axios.delete(`api/study-spots/${studySpotId}`);
       toast.success('Study spot successfully deleted.');
       return true;
     } catch (err) {

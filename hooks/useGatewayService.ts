@@ -2,14 +2,12 @@ import axios from 'axios';
 import { useRouter } from 'next/router';
 import { toast } from 'react-toastify';
 
-const { NEXT_PUBLIC_API_URL } = process.env;
-
 export default function useGatewayService() {
   const router = useRouter();
 
   const authenticate = async (body: { email: string; password: string }) => {
     try {
-      await axios.post(`${NEXT_PUBLIC_API_URL}/authenticate`, body);
+      await axios.post('api/authenticate', body);
       router.push('/');
     } catch (err) {
       console.error('Login failed: ', err);
@@ -24,7 +22,7 @@ export default function useGatewayService() {
     password: string;
   }) => {
     try {
-      await axios.post(`${NEXT_PUBLIC_API_URL}/register`, body);
+      await axios.post('api/register', body);
       router.push('/');
     } catch (err) {
       console.error('Register failed: ', err);
@@ -34,7 +32,7 @@ export default function useGatewayService() {
 
   const logout = async () => {
     try {
-      await axios.get(`${NEXT_PUBLIC_API_URL}/logout`);
+      await axios.get('api/logout');
     } catch (err) {
       console.error('Logout failed: ', err);
     }
