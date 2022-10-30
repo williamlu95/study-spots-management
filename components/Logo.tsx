@@ -1,5 +1,5 @@
 import { useMediaQuery } from '@mui/material';
-import Image from 'next/image';
+import Image from 'next/legacy/image';
 import LogoImage from '../public/logo.png';
 
 export default function Logo(): JSX.Element {
