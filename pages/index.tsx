@@ -85,7 +85,8 @@ export default function StudySpots({ studySpots }: Props): JSX.Element {
 export const getServerSideProps = withSessionSsr(
   async function getServerSideProps({ req }) {
     const user = req.session.user;
-    const { getStudySpots } = useStudySpotsService();
+
+    const { getStudySpots } = useStudySpotsService(req.headers.host);
 
     if (!user) {
       return {

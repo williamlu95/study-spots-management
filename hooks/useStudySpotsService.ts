@@ -78,10 +78,14 @@ const formatStudySpotToModel = (studySpot: StudySpotForm): StudySpotModel => ({
   hours: formatHoursToModel(studySpot.hours),
 });
 
-export default function useStudySpotsService() {
+export default function useStudySpotsService(host = '') {
   const getStudySpots = async (): Promise<StudySpotForm | undefined> => {
     try {
-      const response = await axios.get('api/study-spots');
+      const response = await axios.get(
+        `${
+          process.env.NODE_ENV === 'production' ? 'https://' : 'http://'
+        }${host}/api/study-spots`,
+      );
       return response.data.map((studySpot: StudySpotModel) =>
         formatStudySpotFromModel(studySpot),
       );
@@ -95,7 +99,7 @@ export default function useStudySpotsService() {
     studySpot: StudySpotForm,
   ): Promise<boolean> => {
     try {
-      await axios.post('api/study-spots', formatStudySpotToModel(studySpot));
+      await axios.post('/api/study-spots', formatStudySpotToModel(studySpot));
       toast.success('Study spot successfully saved.');
       return true;
     } catch (err) {
@@ -111,7 +115,7 @@ export default function useStudySpotsService() {
   ): Promise<boolean> => {
     try {
       await axios.put(
-        `api/study-spots/${studySpotId}`,
+        `/api/study-spots/${studySpotId}`,
         formatStudySpotToModel(studySpot),
       );
       toast.success('Study spot successfully updated.');
@@ -125,7 +129,7 @@ export default function useStudySpotsService() {
 
   const deleteStudySpot = async (studySpotId: string): Promise<boolean> => {
     try {
-      await axios.delete(`api/study-spots/${studySpotId}`);
+      await axios.delete(`/api/study-spots/${studySpotId}`);
       toast.success('Study spot successfully deleted.');
       return true;
     } catch (err) {
