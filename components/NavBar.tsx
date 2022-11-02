@@ -10,15 +10,15 @@ export default function NavBar(): JSX.Element {
   return (
     <Stack
       direction="row"
+      height="50px"
       borderBottom={1}
-      alignItems="flex-end"
-      my={1}
       px={1}
+      alignItems="center"
       justifyContent="space-between"
     >
       <Link href="/">
-        <Box sx={{ width: '100px', cursor: 'pointer' }}>
-          <Logo />
+        <Box sx={{ pt: 2 }}>
+          <Logo height={37.5} width={108} />
         </Box>
       </Link>
 

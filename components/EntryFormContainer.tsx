@@ -1,4 +1,4 @@
-import { Container, Stack, Box } from '@mui/material';
+import { Container, Stack } from '@mui/material';
 import Logo from './Logo';
 
 type Props = {
@@ -23,9 +23,9 @@ export default function EntryFormContainer({
             borderRadius={2}
             p={6}
           >
-            <Box sx={{ px: 14 }}>
-              <Logo />
-            </Box>
+            <Stack alignItems="center">
+              <Logo height={100} width={288} />
+            </Stack>
 
             {children}
           </Stack>
