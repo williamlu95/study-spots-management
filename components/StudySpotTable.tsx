@@ -50,7 +50,7 @@ export default function StudySpotTable({
     );
 
   const getSortedStudySpots = () =>
-    structuredClone(studySpots).sort((a, b) =>
+    [...studySpots].sort((a, b) =>
       isAscendingName
         ? a.name.localeCompare(b.name)
         : b.name.localeCompare(a.name),
