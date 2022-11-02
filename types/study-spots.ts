@@ -8,7 +8,9 @@ import {
   WeeklyHoursSchema,
 } from '../zod-schemas/StudySpots';
 
-export type StudySpotModel = { _id?: string } & z.input<typeof StudySpotSchema>;
+export type StudySpotModel = { _id?: string; updatedAt: string } & z.input<
+  typeof StudySpotSchema
+>;
 export type DayHours = z.input<typeof DayHoursSchema>;
 export type Hour = z.input<typeof HourFormSchema>;
 export type Hours = Hour[];
