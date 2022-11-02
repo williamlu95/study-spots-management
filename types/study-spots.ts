@@ -13,7 +13,7 @@ export type DayHours = z.input<typeof DayHoursSchema>;
 export type Hour = z.input<typeof HourFormSchema>;
 export type Hours = Hour[];
 
-export type StudySpotForm = { _id?: string } & z.input<
+export type StudySpotForm = { _id?: string; updatedAt: string } & z.input<
   typeof StudySpotFormSchema
 >;
 

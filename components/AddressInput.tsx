@@ -18,12 +18,6 @@ export default function AddressInput({
         render={({ field }) => <TextField {...field} label="Street Name" />}
       />
 
-      <Controller
-        name="address.country"
-        control={control}
-        render={({ field }) => <TextField {...field} label="Country" />}
-      />
-
       <Grid container>
         <Grid item xs={6} pr={2}>
           <Controller
@@ -55,6 +49,14 @@ export default function AddressInput({
           />
         </Grid>
       </Grid>
+
+      <Controller
+        name="address.country"
+        control={control}
+        render={({ field }) => (
+          <TextField {...field} label="Country" fullWidth />
+        )}
+      />
     </>
   );
 }

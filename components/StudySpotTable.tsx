@@ -9,9 +9,12 @@ import {
   TableRow,
   Typography,
   Stack,
+  TableSortLabel,
 } from '@mui/material';
 import { Address, StudySpotForm } from '../types/study-spots';
 import { ChevronRight } from '@mui/icons-material';
+import { format } from 'date-fns';
+import { useState } from 'react';
 
 type Props = {
   studySpots: StudySpotForm[];
@@ -22,6 +25,8 @@ export default function StudySpotTable({
   studySpots,
   onStudySpotClick,
 }: Props) {
+  const [isAscendingName, setIsAscendingName] = useState(true);
+
   const handleStudySpotClick = (studySpot: StudySpotForm) => () => {
     onStudySpotClick(studySpot);
   };
@@ -44,19 +49,37 @@ export default function StudySpotTable({
       <></>
     );
 
+  const getSortedStudySpots = () =>
+    structuredClone(studySpots).sort((a, b) =>
+      isAscendingName
+        ? a.name.localeCompare(b.name)
+        : b.name.localeCompare(a.name),
+    );
+
   return (
     <>
       <TableContainer component={Paper}>
         <Table stickyHeader aria-label="Table of study spots">
           <TableHead>
             <TableRow>
-              <TableCell>Name</TableCell>
+              <TableCell>
+                <TableSortLabel
+                  active={true}
+                  direction={isAscendingName ? 'asc' : 'desc'}
+                  onClick={() =>
+                    setIsAscendingName((isAscendingName) => !isAscendingName)
+                  }
+                >
+                  Name
+                </TableSortLabel>
+              </TableCell>
               <TableCell>Address</TableCell>
+              <TableCell>Last Updated</TableCell>
               <TableCell padding="checkbox" />
             </TableRow>
           </TableHead>
           <TableBody>
-            {studySpots.map((studySpot) => (
+            {getSortedStudySpots().map((studySpot) => (
               <TableRow
                 key={studySpot._id}
                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
@@ -66,6 +89,9 @@ export default function StudySpotTable({
                 </TableCell>
                 <TableCell component="th" scope="row">
                   {renderAddress(studySpot.address)}
+                </TableCell>
+                <TableCell component="th" scope="row">
+                  {format(new Date(studySpot.updatedAt), 'P')}
                 </TableCell>
                 <TableCell component="th" scope="row">
                   <IconButton onClick={handleStudySpotClick(studySpot)}>
