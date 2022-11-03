@@ -1,5 +1,13 @@
-import { Grid, TextField } from '@mui/material';
+import {
+  FormControl,
+  Grid,
+  InputLabel,
+  MenuItem,
+  Select,
+  TextField,
+} from '@mui/material';
 import { Control, Controller } from 'react-hook-form';
+import { STATES } from '../constants/address';
 import { StudySpotForm } from '../types/study-spots';
 import FormSectionHeader from './FormSectionHeader';
 
@@ -34,7 +42,16 @@ export default function AddressInput({
             name="address.state"
             control={control}
             render={({ field }) => (
-              <TextField fullWidth {...field} label="State" />
+              <FormControl fullWidth>
+                <InputLabel>State</InputLabel>
+                <Select label="State" {...field}>
+                  {STATES.map((state) => (
+                    <MenuItem key={state} value={state}>
+                      {state}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
             )}
           />
         </Grid>
