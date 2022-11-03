@@ -53,7 +53,6 @@ export default function StudySpotForm({
         street: '',
         city: '',
         zipCode: '',
-        country: '',
       },
       drinks: {
         pricing: '',

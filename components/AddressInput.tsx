@@ -49,14 +49,6 @@ export default function AddressInput({
           />
         </Grid>
       </Grid>
-
-      <Controller
-        name="address.country"
-        control={control}
-        render={({ field }) => (
-          <TextField {...field} label="Country" fullWidth />
-        )}
-      />
     </>
   );
 }

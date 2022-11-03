@@ -34,7 +34,7 @@ const addressSchema = {
   city: String,
   state: String,
   zipCode: String,
-  country: String,
+  country: { type: String, default: 'United States' },
 };
 
 const defaultRangeSchema = {

@@ -8,7 +8,6 @@ const EXISTING_STUDY_SPOT = {
     city: 'Las Vegas',
     state: 'NV',
     zipCode: '89107',
-    country: 'USA',
   },
   food: {
     pricing: 'low',

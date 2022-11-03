@@ -7,7 +7,6 @@ export const AddressSchema = z.optional(
     city: z.string(),
     state: z.string().length(2).optional(),
     zipCode: z.string(),
-    country: z.string(),
   }),
 );
 
