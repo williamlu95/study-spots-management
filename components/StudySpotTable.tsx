@@ -17,11 +17,13 @@ import { format } from 'date-fns';
 import { useState } from 'react';
 
 type Props = {
+  hideChevron: boolean;
   studySpots: StudySpotForm[];
   onStudySpotClick: (studySpot: StudySpotForm) => void;
 };
 
 export default function StudySpotTable({
+  hideChevron,
   studySpots,
   onStudySpotClick,
 }: Props) {
@@ -94,9 +96,11 @@ export default function StudySpotTable({
                   {format(new Date(studySpot.updatedAt), 'P')}
                 </TableCell>
                 <TableCell component="th" scope="row">
-                  <IconButton onClick={handleStudySpotClick(studySpot)}>
-                    <ChevronRight />
-                  </IconButton>
+                  {!hideChevron && (
+                    <IconButton onClick={handleStudySpotClick(studySpot)}>
+                      <ChevronRight />
+                    </IconButton>
+                  )}
                 </TableCell>
               </TableRow>
             ))}

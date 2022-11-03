@@ -1,10 +1,15 @@
 import { Box, IconButton, Stack } from '@mui/material';
-import { Logout } from '@mui/icons-material';
+import { Logout, Group } from '@mui/icons-material';
 import Link from 'next/link';
 import useGatewayService from '../hooks/useGatewayService';
 import Logo from './Logo';
+import { USER_ROLE } from '../constants/users';
 
-export default function NavBar(): JSX.Element {
+export default function NavBar({
+  userRole,
+}: {
+  userRole?: string;
+}): JSX.Element {
   const { logout } = useGatewayService();
 
   return (
@@ -22,9 +27,17 @@ export default function NavBar(): JSX.Element {
         </Box>
       </Link>
 
-      <IconButton onClick={logout}>
-        <Logout titleAccess="Logout" />
-      </IconButton>
+      <Stack direction="row" alignItems="center">
+        {userRole !== USER_ROLE.MEMBER && (
+          <IconButton href="/users">
+            <Group titleAccess="Users" />
+          </IconButton>
+        )}
+
+        <IconButton onClick={logout}>
+          <Logout titleAccess="Logout" />
+        </IconButton>
+      </Stack>
     </Stack>
   );
 }

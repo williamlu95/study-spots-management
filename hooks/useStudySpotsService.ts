@@ -78,20 +78,17 @@ const formatStudySpotToModel = (studySpot: StudySpotForm): StudySpotModel => ({
   hours: formatHoursToModel(studySpot.hours),
 });
 
-export default function useStudySpotsService(host = '') {
-  const getStudySpots = async (): Promise<StudySpotForm | undefined> => {
+export default function useStudySpotsService() {
+  const getStudySpots = async (): Promise<StudySpotForm[]> => {
     try {
-      const response = await axios.get(
-        `${
-          process.env.NODE_ENV === 'production' ? 'https://' : 'http://'
-        }${host}/api/study-spots`,
-      );
+      const response = await axios.get('/api/study-spots');
       return response.data.map((studySpot: StudySpotModel) =>
         formatStudySpotFromModel(studySpot),
       );
     } catch (err) {
       console.error('Fetching study spots failed: ', err);
       toast.error('Unable to retrieve study spots.');
+      return [];
     }
   };
 

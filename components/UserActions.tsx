@@ -1,25 +1,15 @@
-import { Search, Clear, Add } from '@mui/icons-material';
-import {
-  Button,
-  IconButton,
-  InputAdornment,
-  Stack,
-  TextField,
-} from '@mui/material';
+import { Search, Clear } from '@mui/icons-material';
+import { IconButton, InputAdornment, Stack, TextField } from '@mui/material';
 import { ChangeEvent } from 'react';
 
 type Props = {
   searchValue: string;
-  hideAddButton: boolean;
   onSearchChange: (value: string) => void;
-  onAddStudySpotClick: () => void;
 };
 
-export default function StudySpotActions({
-  hideAddButton,
+export default function UserActions({
   searchValue,
   onSearchChange,
-  onAddStudySpotClick,
 }: Props): JSX.Element {
   const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
     onSearchChange(e.target.value);
@@ -35,8 +25,9 @@ export default function StudySpotActions({
       alignItems="flex-end"
     >
       <TextField
-        placeholder="Search by name"
+        placeholder="Search by name or email"
         variant="standard"
+        sx={{ width: 250 }}
         onChange={handleSearchChange}
         value={searchValue}
         InputProps={{
@@ -53,13 +44,6 @@ export default function StudySpotActions({
           ),
         }}
       />
-
-      {!hideAddButton && (
-        <Button onClick={onAddStudySpotClick}>
-          <Add />
-          Add Study Spot
-        </Button>
-      )}
     </Stack>
   );
 }

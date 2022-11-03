@@ -1,11 +1,11 @@
-import { Container, Stack } from '@mui/material';
-import { useRouter } from 'next/router';
-import { useState } from 'react';
+import { Container, Divider, Stack, Typography } from '@mui/material';
+import { useEffect, useState } from 'react';
 import AddStudySpotOverlay from '../components/AddStudySpotOverlay';
 import EditStudySpotOverlay from '../components/EditStudySpotOverlay';
 import NavBar from '../components/NavBar';
 import StudySpotActions from '../components/StudySpotActions';
 import StudySpotTable from '../components/StudySpotTable';
+import { USER_ROLE } from '../constants/users';
 import useStudySpotsService from '../hooks/useStudySpotsService';
 import { withSessionSsr } from '../lib/withSession';
 import { StudySpotForm } from '../types/study-spots';
@@ -13,15 +13,24 @@ import { User } from '../types/user';
 
 type Props = {
   user: User;
-  studySpots: StudySpotForm[];
 };
 
-export default function StudySpots({ studySpots }: Props): JSX.Element {
-  const router = useRouter();
+export default function StudySpots({ user }: Props): JSX.Element {
+  const { getStudySpots } = useStudySpotsService();
+  const [studySpots, setStudySpots] = useState<StudySpotForm[]>([]);
   const [isAddDrawerOpen, setIsAddDrawerOpen] = useState(false);
   const [isEditDrawerOpen, setIsEditDrawerOpen] = useState(false);
   const [studySpot, setStudySpot] = useState<StudySpotForm>();
   const [searchValue, setSearchValue] = useState('');
+
+  const fetchStudySpots = async () => {
+    const newStudySpots = await getStudySpots();
+    setStudySpots(newStudySpots);
+  };
+
+  useEffect(() => {
+    fetchStudySpots();
+  }, []);
 
   const handleButtonClick = () => setIsAddDrawerOpen(true);
 
@@ -29,7 +38,7 @@ export default function StudySpots({ studySpots }: Props): JSX.Element {
     setIsAddDrawerOpen(false);
     setIsEditDrawerOpen(false);
     setStudySpot(undefined);
-    shouldRefresh && router.replace(router.asPath);
+    shouldRefresh && fetchStudySpots();
   };
 
   const handleStudySpotClick = (studySpot: StudySpotForm) => {
@@ -48,7 +57,7 @@ export default function StudySpots({ studySpots }: Props): JSX.Element {
 
   return (
     <Stack height="100vh">
-      <NavBar />
+      <NavBar userRole={user.role} />
       <Container
         sx={{
           height: 'calc(100% - 57px)',
@@ -67,15 +76,24 @@ export default function StudySpots({ studySpots }: Props): JSX.Element {
           onClose={handleDrawerClose}
         />
 
+        <Stack direction="column" py={2}>
+          <Typography variant="h4" fontWeight={300} pt={2}>
+            Study Spots
+          </Typography>
+          <Divider />
+        </Stack>
+
         <StudySpotActions
           searchValue={searchValue}
           onSearchChange={handleSearchChange}
           onAddStudySpotClick={handleButtonClick}
+          hideAddButton={user.role === USER_ROLE.MEMBER}
         />
 
         <StudySpotTable
-          onStudySpotClick={handleStudySpotClick}
+          hideChevron={user.role === USER_ROLE.MEMBER}
           studySpots={filterStudySpots()}
+          onStudySpotClick={handleStudySpotClick}
         />
       </Container>
     </Stack>
@@ -86,8 +104,6 @@ export const getServerSideProps = withSessionSsr(
   async function getServerSideProps({ req }) {
     const user = req.session.user;
 
-    const { getStudySpots } = useStudySpotsService(req.headers.host);
-
     if (!user) {
       return {
         redirect: {
@@ -97,12 +113,9 @@ export const getServerSideProps = withSessionSsr(
       };
     }
 
-    const studySpots = await getStudySpots();
-
     return {
       props: {
         user: req.session.user,
-        studySpots,
       },
     };
   },

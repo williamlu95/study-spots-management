@@ -80,8 +80,6 @@ export default function StudySpotForm({
 
   const handleRemoveClick = (index: number) => remove(index);
 
-  console.log('errors :>> ', errors);
-
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <Stack spacing={2}>

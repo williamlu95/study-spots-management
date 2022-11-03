@@ -1,4 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
+import { USER_ROLE } from '../../../constants/users';
 import { withSessionRoute } from '../../../lib/withSession';
 import middleware from '../../../middleware';
 import StudySpot from '../../../models/study-spot';
@@ -51,12 +52,14 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
         res,
         callback: updateStudySpot,
         schema: StudySpotSchema,
+        roles: [USER_ROLE.ADMIN, USER_ROLE.SUPER_ADMIN],
       });
     case 'DELETE':
       return middleware({
         req,
         res,
         callback: deleteStudySpot,
+        roles: [USER_ROLE.ADMIN, USER_ROLE.SUPER_ADMIN],
       });
     default:
       return res.status(405).end(`Method ${req.method} Not Allowed`);
