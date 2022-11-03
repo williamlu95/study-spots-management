@@ -32,7 +32,7 @@ export default function useGatewayService() {
 
   const logout = async () => {
     try {
-      await axios.get('api/logout');
+      await axios.post('api/logout');
     } catch (err) {
       console.error('Logout failed: ', err);
     }

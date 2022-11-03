@@ -17,9 +17,9 @@ export default function EntryFormContainer({
           <Stack
             justifyContent="center"
             spacing={4}
-            height={700}
-            width={500}
-            border={1}
+            height={{ xs: 'unset', sm: 700 }}
+            width={{ xs: 'unset', sm: 500 }}
+            border={{ xs: 0, sm: 1 }}
             borderRadius={2}
             p={6}
           >
