@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { AnyZodObject } from 'zod';
+import dbConnect from '../lib/mongoose';
 import parseBody from './schema-validation';
 
 type MiddlewareParams = {
@@ -16,6 +17,7 @@ export default async function middleware({
   schema,
 }: MiddlewareParams) {
   try {
+    await dbConnect();
     await parseBody({ req, res, schema });
     return callback(req, res);
   } catch (err) {

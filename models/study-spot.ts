@@ -1,5 +1,4 @@
-import { Schema } from 'mongoose';
-import connection from '../lib/mongoose';
+import { Schema, model, models } from 'mongoose';
 
 export const DEFAULT_RANGE = Object.freeze({
   LOW: 'low',
@@ -70,5 +69,5 @@ const studySpotSchema = new Schema(
   },
 );
 
-const StudySpot = connection.model('study_spot', studySpotSchema);
+const StudySpot = models.study_spot || model('study_spot', studySpotSchema);
 export default StudySpot;

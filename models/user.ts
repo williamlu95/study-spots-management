@@ -1,5 +1,4 @@
-import { Schema } from 'mongoose';
-import connection from '../lib/mongoose';
+import { Schema, model, models } from 'mongoose';
 
 export const USER_ROLE = Object.freeze({
   SUPER_ADMIN: 'super_admin',
@@ -28,5 +27,5 @@ const userSchema = new Schema(
   },
 );
 
-const User = connection.model('user', userSchema);
+const User = models.user || model('user', userSchema);
 export default User;

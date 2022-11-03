@@ -9,10 +9,6 @@ import {
   CssBaseline,
 } from '@mui/material';
 import 'react-toastify/dist/ReactToastify.css';
-import '@fontsource/roboto/300.css';
-import '@fontsource/roboto/400.css';
-import '@fontsource/roboto/500.css';
-import '@fontsource/roboto/700.css';
 import '../styles.css';
 import { useMemo } from 'react';
 
