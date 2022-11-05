@@ -1,4 +1,10 @@
-import { Button, Link, TextField, Typography } from '@mui/material';
+import {
+  Button,
+  CircularProgress,
+  Link,
+  TextField,
+  Typography,
+} from '@mui/material';
 import { useForm, Controller, SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -6,6 +12,7 @@ import useGatewayService from '../../hooks/useGatewayService';
 import PasswordField from '../../components/PasswordField';
 import EntryFormContainer from '../../components/EntryFormContainer';
 import { withSessionSsr } from '../../lib/withSession';
+import { useState } from 'react';
 
 const LoginSchema = z.object({
   email: z.string().email(),
@@ -16,6 +23,7 @@ type Login = z.input<typeof LoginSchema>;
 
 export default function Login(): JSX.Element {
   const { authenticate } = useGatewayService();
+  const [loggingIn, setLoggingIn] = useState(false);
   const { handleSubmit, control } = useForm<Login>({
     resolver: zodResolver(LoginSchema),
     defaultValues: {
@@ -24,7 +32,11 @@ export default function Login(): JSX.Element {
     },
   });
 
-  const onSubmit: SubmitHandler<Login> = (data) => authenticate(data);
+  const onSubmit: SubmitHandler<Login> = async (data) => {
+    setLoggingIn(true);
+    await authenticate(data);
+    setLoggingIn(false);
+  };
 
   return (
     <EntryFormContainer onFormSubmit={handleSubmit(onSubmit)}>
@@ -44,7 +56,12 @@ export default function Login(): JSX.Element {
         )}
       />
 
-      <Button type="submit" variant="contained">
+      <Button
+        disabled={loggingIn}
+        endIcon={loggingIn ? <CircularProgress size={20} /> : undefined}
+        type="submit"
+        variant="contained"
+      >
         Login
       </Button>
 

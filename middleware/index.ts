@@ -12,6 +12,15 @@ type MiddlewareParams = {
   roles?: string[];
 };
 
+const connectToDatabase = async (res: NextApiResponse) => {
+  try {
+    await dbConnect();
+  } catch (err) {
+    res.status(500).send('Internal Server Error.');
+    throw err;
+  }
+};
+
 export default async function middleware({
   req,
   res,
@@ -20,7 +29,7 @@ export default async function middleware({
   roles = [],
 }: MiddlewareParams) {
   try {
-    await dbConnect();
+    await connectToDatabase(res);
     await parseBody({ req, res, schema });
     validateRoles({ req, res, roles });
     return callback(req, res);

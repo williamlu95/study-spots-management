@@ -1,4 +1,10 @@
-import { Button, Link, TextField, Typography } from '@mui/material';
+import {
+  Button,
+  CircularProgress,
+  Link,
+  TextField,
+  Typography,
+} from '@mui/material';
 import { useForm, Controller, SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -6,6 +12,7 @@ import useGatewayService from '../../hooks/useGatewayService';
 import EntryFormContainer from '../../components/EntryFormContainer';
 import PasswordField from '../../components/PasswordField';
 import { withSessionSsr } from '../../lib/withSession';
+import { useState } from 'react';
 
 const RegisterSchema = z
   .object({
@@ -48,6 +55,7 @@ type Register = z.input<typeof RegisterSchema>;
 
 export default function Register(): JSX.Element {
   const { register } = useGatewayService();
+  const [registering, setRegistering] = useState(false);
   const {
     handleSubmit,
     control,
@@ -63,7 +71,11 @@ export default function Register(): JSX.Element {
     },
   });
 
-  const onSubmit: SubmitHandler<Register> = (data) => register(data);
+  const onSubmit: SubmitHandler<Register> = async (data) => {
+    setRegistering(true);
+    await register(data);
+    setRegistering(false);
+  };
 
   return (
     <EntryFormContainer onFormSubmit={handleSubmit(onSubmit)}>
@@ -132,7 +144,12 @@ export default function Register(): JSX.Element {
           />
         )}
       />
-      <Button type="submit" variant="contained">
+      <Button
+        disabled={registering}
+        endIcon={registering ? <CircularProgress size={20} /> : undefined}
+        type="submit"
+        variant="contained"
+      >
         Sign Up
       </Button>
 
