@@ -65,6 +65,12 @@ const studySpotSchema = new Schema(
     hasOutlets: { type: Boolean, default: null },
     hasBathroom: { type: Boolean, default: null },
     hasWifi: { type: Boolean, default: null },
+    images: [
+      {
+        url: String,
+        caption: String,
+      },
+    ],
   },
   {
     timestamps: true,

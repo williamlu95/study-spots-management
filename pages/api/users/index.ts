@@ -4,9 +4,15 @@ import { withSessionRoute } from '../../../lib/withSession';
 import middleware from '../../../middleware';
 import User from '../../../models/user';
 
-const getUsers = async (_req: NextApiRequest, res: NextApiResponse) => {
+const getUsers = async (req: NextApiRequest, res: NextApiResponse) => {
   const users = await User.find({}).select('-password');
-  res.status(200).send(users);
+
+  const filteredUsers =
+    req.session.user?.role === USER_ROLE.ADMIN
+      ? users.filter((user) => user.role !== USER_ROLE.SUPER_ADMIN)
+      : users;
+
+  res.status(200).send(filteredUsers);
 };
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
