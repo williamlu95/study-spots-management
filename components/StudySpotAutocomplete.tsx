@@ -26,12 +26,14 @@ const EMPTY_VALUE = {
 };
 
 export default function StudySpotAutoComplete({
+  initialPlace,
   onChange,
 }: {
+  initialPlace?: Place;
   onChange: (place: Place) => void;
 }): JSX.Element {
   const { findPlaces } = usePlaceService();
-  const [place, setPlace] = useState<Place>();
+  const [place, setPlace] = useState<Place | undefined>(initialPlace);
   const [inputValue, setInputValue] = useState('');
   const [open, setOpen] = useState(false);
   const [options, setOptions] = useState<readonly Place[]>([]);

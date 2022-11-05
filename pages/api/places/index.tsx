@@ -16,6 +16,7 @@ const searchPlaces = async (req: NextApiRequest, res: NextApiResponse) => {
           input,
           inputtype: 'textquery',
           fields: OUTPUT_FIELDS.join(','),
+          locationbias: 'point:36.114647,-115.172813',
           key: process.env.GOOGLE_MAPS_API_KEY,
         },
       },

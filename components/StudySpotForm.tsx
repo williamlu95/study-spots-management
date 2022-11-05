@@ -5,7 +5,10 @@ import { useEffect } from 'react';
 import { Controller, useFieldArray, useForm } from 'react-hook-form';
 import usePlaceService from '../hooks/usePlaceService';
 import { Place } from '../types/places';
-import { StudySpotForm as StudySpotFormType } from '../types/study-spots';
+import {
+  Address,
+  StudySpotForm as StudySpotFormType,
+} from '../types/study-spots';
 import { StudySpotFormSchema } from '../zod-schemas/StudySpots';
 import AddressInput from './AddressInput';
 import AmenitiesInput from './AmenitiesInput';
@@ -32,6 +35,32 @@ const DEFAULT_HOURS = {
     friday: false,
     saturday: false,
   },
+};
+
+const formatAddress = (address?: Address) => {
+  if (!address) {
+    return '';
+  }
+
+  return `${address.street}, ${address.city}, ${address.state} ${address.zipCode}`;
+};
+
+const buildPlace = (studySpot?: StudySpotFormType): Place | undefined => {
+  if (!studySpot?.name) {
+    return;
+  }
+
+  return {
+    name: studySpot.name,
+    place_id: studySpot.googlePlaceId || null,
+    formatted_address: formatAddress(studySpot.address),
+    geometry: {
+      location: {
+        lat: studySpot.location.latitude,
+        lng: studySpot.location.longitude,
+      },
+    },
+  };
 };
 
 export default function StudySpotForm({
@@ -110,7 +139,10 @@ export default function StudySpotForm({
   return (
     <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
       <Stack spacing={2}>
-        <StudySpotAutoComplete onChange={handleAutocompleteChange} />
+        <StudySpotAutoComplete
+          initialPlace={buildPlace(studySpot)}
+          onChange={handleAutocompleteChange}
+        />
 
         <Controller
           name="name"
