@@ -1,5 +1,6 @@
 import { Container, Stack } from '@mui/material';
-import Logo from './Logo';
+import dynamic from 'next/dynamic';
+const Logo = dynamic(() => import('./Logo'), { ssr: false });
 
 type Props = {
   children: JSX.Element | JSX.Element[];

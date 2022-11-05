@@ -51,8 +51,10 @@ const sustenanceSchema = {
 const studySpotSchema = new Schema(
   {
     name: { type: String, required: true },
+    googlePlaceId: String,
     hours: hoursSchema,
     address: addressSchema,
+    location: { latitude: Number, longitude: Number },
     food: sustenanceSchema,
     drinks: sustenanceSchema,
     seating: {

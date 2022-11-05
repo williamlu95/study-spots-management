@@ -18,7 +18,7 @@ export default function Logo({
       height={height}
       width={width}
       alt="Study Spot Logo"
-      style={{ filter }}
+      style={{ filter: filter }}
     />
   );
 }

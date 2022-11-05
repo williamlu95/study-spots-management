@@ -41,18 +41,22 @@ export default function AddressInput({
           <Controller
             name="address.state"
             control={control}
-            render={({ field }) => (
-              <FormControl fullWidth>
-                <InputLabel>State</InputLabel>
-                <Select label="State" {...field}>
-                  {STATES.map((state) => (
-                    <MenuItem key={state} value={state}>
-                      {state}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            )}
+            render={({ field }) => {
+              console.log('field :>> ', field);
+
+              return (
+                <FormControl fullWidth>
+                  <InputLabel>State</InputLabel>
+                  <Select label="State" {...field}>
+                    {STATES.map((state) => (
+                      <MenuItem key={state} value={state}>
+                        {state}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              );
+            }}
           />
         </Grid>
 

@@ -1,14 +1,17 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Add } from '@mui/icons-material';
-import { TextField, Stack, Button } from '@mui/material';
+import { Stack, Button, TextField } from '@mui/material';
 import { useEffect } from 'react';
 import { Controller, useFieldArray, useForm } from 'react-hook-form';
+import usePlaceService from '../hooks/usePlaceService';
+import { Place } from '../types/places';
 import { StudySpotForm as StudySpotFormType } from '../types/study-spots';
 import { StudySpotFormSchema } from '../zod-schemas/StudySpots';
 import AddressInput from './AddressInput';
 import AmenitiesInput from './AmenitiesInput';
 import FormSectionHeader from './FormSectionHeader';
 import HoursInput from './HoursInput';
+import StudySpotAutoComplete from './StudySpotAutocomplete';
 
 type Props = {
   studySpot?: StudySpotFormType;
@@ -37,9 +40,13 @@ export default function StudySpotForm({
   onDirty,
   onSubmit,
 }: Props): JSX.Element {
+  const { getPlaceAddress } = usePlaceService();
+
   const {
     handleSubmit,
     control,
+    setValue,
+    watch,
     formState: { isDirty, errors },
   } = useForm<StudySpotFormType>({
     resolver: zodResolver(StudySpotFormSchema),
@@ -52,11 +59,16 @@ export default function StudySpotForm({
       address: {
         street: '',
         city: '',
+        state: '',
         zipCode: '',
       },
       drinks: {
         pricing: '',
         quality: '',
+      },
+      location: {
+        latitude: null,
+        longitude: null,
       },
       seating: '',
       hasOutlets: false,
@@ -71,6 +83,8 @@ export default function StudySpotForm({
     name: 'hours',
   });
 
+  watch('googlePlaceId');
+
   useEffect(() => {
     onDirty(isDirty);
   }, [onDirty, isDirty]);
@@ -79,21 +93,39 @@ export default function StudySpotForm({
 
   const handleRemoveClick = (index: number) => remove(index);
 
+  const handleAutocompleteChange = async (place: Place) => {
+    if (place.place_id) {
+      const address = await getPlaceAddress(place.place_id);
+      setValue('address', address);
+    } else {
+      setValue('address', { street: '', city: '', zipCode: '', state: '' });
+    }
+
+    setValue('googlePlaceId', place.place_id);
+    setValue('name', place.name);
+    setValue('location.latitude', place.geometry.location.lat);
+    setValue('location.longitude', place.geometry.location.lng);
+  };
+
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
       <Stack spacing={2}>
+        <StudySpotAutoComplete onChange={handleAutocompleteChange} />
+
         <Controller
           name="name"
           control={control}
           render={({ field }) => (
             <TextField
               {...field}
-              label="Name"
+              fullWidth
               error={!!errors?.name}
               helperText={errors?.name?.message}
+              label="Name"
             />
           )}
         />
+
         <AddressInput control={control} />
 
         <FormSectionHeader label="Hours of Operation" />

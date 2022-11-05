@@ -2,8 +2,9 @@ import { Box, IconButton, Stack } from '@mui/material';
 import { Logout, Group } from '@mui/icons-material';
 import Link from 'next/link';
 import useGatewayService from '../hooks/useGatewayService';
-import Logo from './Logo';
 import { USER_ROLE } from '../constants/users';
+import dynamic from 'next/dynamic';
+const Logo = dynamic(() => import('./Logo'), { ssr: false });
 
 export default function NavBar({
   userRole,

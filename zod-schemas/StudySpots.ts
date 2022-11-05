@@ -1,15 +1,12 @@
 import { format } from 'date-fns';
 import { z } from 'zod';
 
-export const AddressSchema = z.optional(
-  z.object({
-    street: z.string(),
-    city: z.string(),
-    state: z.string().length(2).optional(),
-    zipCode: z.string(),
-  }),
-);
-
+export const AddressSchema = z.object({
+  street: z.string(),
+  city: z.string(),
+  state: z.string().length(2).optional(),
+  zipCode: z.string(),
+});
 const HourSchema = z
   .string()
   .or(z.date())
@@ -63,10 +60,17 @@ export const HourFormSchema = z.object({
 
 export const HoursSchema = z.array(HourFormSchema);
 
+export const LocationSchema = z.object({
+  latitude: z.number().nullable().default(null),
+  longitude: z.number().nullable().default(null),
+});
+
 export const StudySpotSchema = z.object({
+  googlePlaceId: z.optional(z.string().nullable()),
   name: z.string().min(1, 'Please enter a name for the study spot.'),
   seating: z.enum(['none', 'some', 'plenty', '']),
-  address: AddressSchema,
+  address: z.optional(AddressSchema),
+  location: LocationSchema,
   hours: WeeklyHoursSchema,
   food: SustenanceSchema,
   drinks: SustenanceSchema,
