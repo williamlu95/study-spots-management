@@ -33,8 +33,8 @@ export default function StudySpotTable({
     onStudySpotClick(studySpot);
   };
 
-  const renderAddress = (address: Address) =>
-    address?.street ? (
+  const renderAddress = (address?: Address) =>
+    address && address.street ? (
       `${address.street}, ${address.city}, ${address.state} ${address.zipCode}`
     ) : (
       <></>
