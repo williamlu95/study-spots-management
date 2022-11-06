@@ -149,6 +149,7 @@ export default function StudySpotAutoComplete({
       disableClearable={true}
       open={open && !!inputValue}
       disabled={!!place}
+      filterOptions={(options) => options}
       onChange={handleAutocompleteChange}
       onOpen={handleMenuOpen}
       onClose={handleMenuClose}
