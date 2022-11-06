@@ -127,7 +127,7 @@ export default function StudySpotAutoComplete({
           <Chip
             label={renderLabel(place)}
             onDelete={handleClearValue}
-            sx={{ maxWidth: '90%' }}
+            sx={{ maxWidth: '85%' }}
           />
         ) : (
           <></>

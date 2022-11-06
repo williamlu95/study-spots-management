@@ -157,7 +157,12 @@ export default function ImagesInput({
   const renderImage = (imageFileName: string) => {
     if (typeof imagesLoading[imageFileName] === 'number') {
       return (
-        <Stack height="100%" alignItems="center" justifyContent="center">
+        <Stack
+          height="140px"
+          alignItems="center"
+          justifyContent="center"
+          position="relative"
+        >
           <CircularProgress
             variant="determinate"
             value={imagesLoading[imageFileName]}
@@ -178,7 +183,7 @@ export default function ImagesInput({
       );
     }
 
-    return <></>;
+    return <Stack height="140px" />;
   };
 
   return (
@@ -237,7 +242,7 @@ export default function ImagesInput({
               <ImageListItem key={stateImages.fileName}>
                 <Paper
                   elevation={1}
-                  sx={{ height: '140px', m: 1, width: '120px' }}
+                  sx={{ height: '150px', m: 1, width: '120px' }}
                 >
                   {renderImage(stateImages.fileName)}
                 </Paper>

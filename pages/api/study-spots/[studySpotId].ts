@@ -70,7 +70,14 @@ const updateStudySpot = async (req: NextApiRequest, res: NextApiResponse) => {
 
 const deleteStudySpot = async (req: NextApiRequest, res: NextApiResponse) => {
   const { studySpotId } = req.query;
-  await StudySpot.findByIdAndDelete(studySpotId);
+  const studySpot = await StudySpot.findById(studySpotId);
+
+  if (!studySpot) {
+    res.send({ ok: true });
+    return;
+  }
+  await removeImages(studySpot.images, []);
+  await studySpot.delete();
   res.send({ ok: true });
 };
 
