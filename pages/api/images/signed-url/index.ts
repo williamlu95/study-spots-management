@@ -6,8 +6,6 @@ import { s3Client } from '../../../../lib/s3';
 import { withSessionRoute } from '../../../../lib/withSession';
 import middleware from '../../../../middleware';
 
-const SPACE_NAME = 'study-spots-images';
-
 const getS3SignedUrl = async (req: NextApiRequest, res: NextApiResponse) => {
   const { contentType, key } = req.query;
 
@@ -17,7 +15,7 @@ const getS3SignedUrl = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   const putObjectCommand = new PutObjectCommand({
-    Bucket: SPACE_NAME,
+    Bucket: process.env.SPACE_NAME,
     Key: String(key),
     ACL: 'public-read',
     ContentType: String(contentType),

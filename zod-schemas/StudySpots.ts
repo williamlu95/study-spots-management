@@ -65,6 +65,11 @@ export const LocationSchema = z.object({
   longitude: z.number().nullable().default(null),
 });
 
+export const ImageSchema = z.object({
+  fileName: z.string(),
+  caption: z.optional(z.string()),
+});
+
 export const StudySpotSchema = z.object({
   googlePlaceId: z.optional(z.string().nullable()),
   name: z.string().min(1, 'Please enter a name for the study spot.'),
@@ -77,9 +82,7 @@ export const StudySpotSchema = z.object({
   hasOutlets: z.boolean(),
   hasBathroom: z.boolean(),
   hasWifi: z.boolean(),
-  images: z.array(
-    z.object({ fileName: z.string(), caption: z.optional(z.string()) }),
-  ),
+  images: z.array(ImageSchema),
 });
 
 export const StudySpotFormSchema = StudySpotSchema.extend({

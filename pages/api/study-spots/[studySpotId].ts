@@ -1,9 +1,32 @@
+import { DeleteObjectCommand } from '@aws-sdk/client-s3';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { USER_ROLE } from '../../../constants/users';
+import { s3Client } from '../../../lib/s3';
 import { withSessionRoute } from '../../../lib/withSession';
 import middleware from '../../../middleware';
 import StudySpot from '../../../models/study-spot';
+import { ImageType } from '../../../types/study-spots';
 import { StudySpotSchema } from '../../../zod-schemas/StudySpots';
+
+const removeImages = async (oldImages: ImageType[], newImages: ImageType[]) => {
+  const imagesToKeep = new Set(newImages.map((image) => image.fileName));
+  const imagesToRemovePromises = oldImages
+    .filter((image) => !imagesToKeep.has(image.fileName))
+    .map((image) =>
+      s3Client.send(
+        new DeleteObjectCommand({
+          Bucket: process.env.SPACE_NAME,
+          Key: image.fileName,
+        }),
+      ),
+    );
+
+  try {
+    await Promise.all(imagesToRemovePromises);
+  } catch (err) {
+    console.log('Failed to remove all images: ', err);
+  }
+};
 
 const updateStudySpot = async (req: NextApiRequest, res: NextApiResponse) => {
   const { studySpotId } = req.query;
@@ -27,6 +50,7 @@ const updateStudySpot = async (req: NextApiRequest, res: NextApiResponse) => {
     return res.status(400).send('Request is not valid');
   }
 
+  await removeImages(studySpot.images as ImageType[], images);
   if (name) studySpot.name = name;
   if (seating) studySpot.seating = seating;
   if (address) studySpot.address = address;

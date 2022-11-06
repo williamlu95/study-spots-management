@@ -3,6 +3,7 @@ import {
   AddressSchema,
   DayHoursSchema,
   HourFormSchema,
+  ImageSchema,
   StudySpotFormSchema,
   StudySpotSchema,
   WeeklyHoursSchema,
@@ -31,3 +32,5 @@ export type Day =
   | 'saturday';
 
 export type HoursModel = z.input<typeof WeeklyHoursSchema>;
+
+export type ImageType = z.input<typeof ImageSchema>;

@@ -1,18 +1,17 @@
-import { CloudUpload } from '@mui/icons-material';
+import { CloudUpload, Delete } from '@mui/icons-material';
 import {
   Paper,
-  Typography,
   Stack,
-  ButtonBase,
   ImageList,
   ImageListItem,
   CircularProgress,
+  Button,
 } from '@mui/material';
 import { ChangeEvent, useEffect, useState } from 'react';
 import useImageService from '../hooks/useImageService';
 import FormSectionHeader from './FormSectionHeader';
 import { AxiosProgressEvent } from 'axios';
-import Image from 'next/image';
+import SelectableImage from './SelectableImage';
 
 type ImageType = {
   id?: string;
@@ -31,6 +30,7 @@ export default function ImagesInput({
 }: Props): JSX.Element {
   const { uploadImage, generateNewFileName } = useImageService();
   const [stateImages, setStateImages] = useState<ImageType[]>(images);
+  const [selectedImages, setSelectedImages] = useState(new Set<string>());
   const [imagesLoaded, setImagesLoaded] = useState(
     new Set(Object.values(images).map(({ fileName }) => fileName)),
   );
@@ -79,7 +79,7 @@ export default function ImagesInput({
       }));
     };
 
-  const handleFileUploadClick = () => {
+  const handleImageUploadClick = () => {
     document.getElementById('file-upload')?.click();
   };
 
@@ -106,7 +106,7 @@ export default function ImagesInput({
     setImagesLoaded(new Set(imagesLoaded));
   };
 
-  const handleFilesUploaded = async (e: ChangeEvent<HTMLInputElement>) => {
+  const handleImagesUploaded = async (e: ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) {
       return;
     }
@@ -135,6 +135,25 @@ export default function ImagesInput({
     );
   };
 
+  const handleImageSelect = (fileName: string) => {
+    if (selectedImages.has(fileName)) {
+      selectedImages.delete(fileName);
+    } else {
+      selectedImages.add(fileName);
+    }
+
+    setSelectedImages(new Set(selectedImages));
+  };
+
+  const handleImageDeletion = async () => {
+    const newStateImages = stateImages.filter(
+      (image) => !selectedImages.has(image.fileName),
+    );
+
+    setSelectedImages(new Set());
+    setStateImages(newStateImages);
+  };
+
   const renderImage = (imageFileName: string) => {
     if (typeof imagesLoading[imageFileName] === 'number') {
       return (
@@ -149,12 +168,13 @@ export default function ImagesInput({
 
     if (imagesLoaded.has(imageFileName)) {
       return (
-        <Image
-          alt="Study Spot Image"
-          src={`${process.env.NEXT_PUBLIC_SPACE_URL}/${imageFileName}`}
-          width={120}
-          height={140}
-        />
+        <Stack position="relative">
+          <SelectableImage
+            selected={selectedImages.has(imageFileName)}
+            fileName={imageFileName}
+            onClick={handleImageSelect}
+          />
+        </Stack>
       );
     }
 
@@ -165,49 +185,69 @@ export default function ImagesInput({
     <>
       <FormSectionHeader label="Images" />
 
-      <Paper sx={{ border: 1, borderStyle: 'dashed' }}>
-        <ButtonBase
-          sx={{ width: '100%' }}
-          onClick={handleFileUploadClick}
+      <Stack direction="row" spacing={1} justifyContent="space-between">
+        <Button
+          variant="outlined"
+          onClick={handleImageUploadClick}
           disabled={areImagesLoading()}
+          startIcon={<CloudUpload />}
         >
-          <Stack alignItems="center" py={4}>
-            <input
-              id="file-upload"
-              type="file"
-              multiple
-              accept="image/*"
-              style={{ display: 'none' }}
-              onChange={handleFilesUploaded}
-            />
-            <CloudUpload />
+          <input
+            id="file-upload"
+            type="file"
+            multiple
+            accept="image/*"
+            style={{ display: 'none' }}
+            onChange={handleImagesUploaded}
+          />
+          Upload Images
+        </Button>
 
-            <Typography variant="h6" fontWeight={300} component="div">
-              Drag and drop or click here to upload images
-            </Typography>
-          </Stack>
-        </ButtonBase>
-      </Paper>
+        {selectedImages.size ? (
+          <Button
+            color="error"
+            variant="outlined"
+            onClick={handleImageDeletion}
+            disabled={areImagesLoading()}
+            startIcon={<Delete />}
+          >
+            Delete Images
+          </Button>
+        ) : (
+          <></>
+        )}
+      </Stack>
 
-      <ImageList
-        rowHeight={150}
-        style={{
-          gridAutoFlow: 'column',
-          gridTemplateColumns: 'repeat(auto-fill, 120px)',
-          gridAutoColumns: '120px',
-        }}
-      >
-        {stateImages.map((stateImages) => (
-          <ImageListItem key={stateImages.fileName}>
-            <Paper
-              elevation={1}
-              sx={{ height: '140px', mb: 1, width: '120px' }}
-            >
-              {renderImage(stateImages.fileName)}
-            </Paper>
-          </ImageListItem>
-        ))}
-      </ImageList>
+      {
+        <ImageList
+          rowHeight={150}
+          style={{
+            gridAutoFlow: 'column',
+            gridTemplateColumns: 'repeat(auto-fill, 120px)',
+            gridAutoColumns: '120px',
+          }}
+          sx={{
+            border: (theme) => `1px solid ${theme.palette.divider}`,
+            borderRadius: '4px',
+            pb: 0.5,
+          }}
+        >
+          {stateImages.length ? (
+            stateImages.map((stateImages) => (
+              <ImageListItem key={stateImages.fileName}>
+                <Paper
+                  elevation={1}
+                  sx={{ height: '140px', m: 1, width: '120px' }}
+                >
+                  {renderImage(stateImages.fileName)}
+                </Paper>
+              </ImageListItem>
+            ))
+          ) : (
+            <ImageListItem />
+          )}
+        </ImageList>
+      }
     </>
   );
 }
