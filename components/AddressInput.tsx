@@ -37,30 +37,26 @@ export default function AddressInput({
           />
         </Grid>
 
-        <Grid item xs={2} pr={2}>
+        <Grid item xs={3} pr={2}>
           <Controller
             name="address.state"
             control={control}
-            render={({ field }) => {
-              console.log('field :>> ', field);
-
-              return (
-                <FormControl fullWidth>
-                  <InputLabel>State</InputLabel>
-                  <Select label="State" {...field}>
-                    {STATES.map((state) => (
-                      <MenuItem key={state} value={state}>
-                        {state}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              );
-            }}
+            render={({ field }) => (
+              <FormControl fullWidth>
+                <InputLabel>State</InputLabel>
+                <Select label="State" {...field}>
+                  {STATES.map((state) => (
+                    <MenuItem key={state} value={state}>
+                      {state}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            )}
           />
         </Grid>
 
-        <Grid item xs={4}>
+        <Grid item xs={3}>
           <Controller
             name="address.zipCode"
             control={control}

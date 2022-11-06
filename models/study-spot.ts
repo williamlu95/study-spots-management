@@ -67,8 +67,8 @@ const studySpotSchema = new Schema(
     hasWifi: { type: Boolean, default: null },
     images: [
       {
-        url: String,
-        caption: String,
+        fileName: String,
+        caption: { type: String, default: '' },
       },
     ],
   },

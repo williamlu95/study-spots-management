@@ -77,6 +77,9 @@ export const StudySpotSchema = z.object({
   hasOutlets: z.boolean(),
   hasBathroom: z.boolean(),
   hasWifi: z.boolean(),
+  images: z.array(
+    z.object({ fileName: z.string(), caption: z.optional(z.string()) }),
+  ),
 });
 
 export const StudySpotFormSchema = StudySpotSchema.extend({

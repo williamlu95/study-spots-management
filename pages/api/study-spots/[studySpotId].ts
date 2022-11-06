@@ -17,6 +17,9 @@ const updateStudySpot = async (req: NextApiRequest, res: NextApiResponse) => {
     address,
     hours,
     seating,
+    images,
+    location,
+    googlePlaceId,
   } = req.body;
   const studySpot = await StudySpot.findById(studySpotId);
 
@@ -30,6 +33,9 @@ const updateStudySpot = async (req: NextApiRequest, res: NextApiResponse) => {
   if (food) studySpot.food = food;
   if (drinks) studySpot.drinks = drinks;
   if (hours) studySpot.hours = hours;
+  if (images) studySpot.images = images;
+  if (location) studySpot.location = location;
+  if (googlePlaceId) studySpot.googlePlaceId = googlePlaceId;
   if (hasOutlets !== undefined) studySpot.hasOutlets = hasOutlets;
   if (hasBathroom !== undefined) studySpot.hasBathroom = hasBathroom;
   if (hasWifi !== undefined) studySpot.hasWifi = hasWifi;

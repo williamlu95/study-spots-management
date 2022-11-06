@@ -7,10 +7,14 @@ import {
   createTheme,
   useMediaQuery,
   CssBaseline,
+  darkScrollbar,
 } from '@mui/material';
 import 'react-toastify/dist/ReactToastify.css';
+import '@uppy/core/dist/style.css';
+import '@uppy/drag-drop/dist/style.css';
 import '../styles.css';
 import { useMemo } from 'react';
+import { grey } from '@mui/material/colors';
 
 export default function App({ Component, pageProps }: AppProps) {
   const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
@@ -25,6 +29,34 @@ export default function App({ Component, pageProps }: AppProps) {
         typography: {
           allVariants: {
             textTransform: 'none',
+          },
+        },
+        components: {
+          MuiImageList: {
+            styleOverrides: {
+              root: {
+                gridAutoFlow: 'column',
+                gridTemplateColumns: 'repeat(auto-fill, 120px)',
+                gridAutoColumns: '120px',
+              },
+            },
+          },
+          MuiCssBaseline: {
+            styleOverrides: {
+              html: {
+                ...darkScrollbar(
+                  mode === 'light'
+                    ? {
+                        track: grey[200],
+                        thumb: grey[400],
+                        active: grey[400],
+                      }
+                    : undefined,
+                ),
+                //scrollbarWidth for Firefox
+                scrollbarWidth: 'thin',
+              },
+            },
           },
         },
       }),

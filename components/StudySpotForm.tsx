@@ -14,7 +14,14 @@ import AddressInput from './AddressInput';
 import AmenitiesInput from './AmenitiesInput';
 import FormSectionHeader from './FormSectionHeader';
 import HoursInput from './HoursInput';
+import ImagesInput from './ImagesInput';
 import StudySpotAutoComplete from './StudySpotAutocomplete';
+
+type ImageType = {
+  id?: string;
+  fileName: string;
+  caption?: string;
+};
 
 type Props = {
   studySpot?: StudySpotFormType;
@@ -56,11 +63,16 @@ const buildPlace = (studySpot?: StudySpotFormType): Place | undefined => {
     formatted_address: formatAddress(studySpot.address),
     geometry: {
       location: {
-        lat: studySpot.location.latitude,
-        lng: studySpot.location.longitude,
+        lat: studySpot?.location?.latitude,
+        lng: studySpot?.location?.longitude,
       },
     },
   };
+};
+
+const SET_VALUE_OPTIONS = {
+  shouldDirty: true,
+  shouldValidate: true,
 };
 
 export default function StudySpotForm({
@@ -103,37 +115,67 @@ export default function StudySpotForm({
       hasOutlets: false,
       hasBathroom: false,
       hasWifi: false,
+      images: [],
       ...studySpot,
     },
   });
 
-  const { fields, append, remove } = useFieldArray({
+  const hours = useFieldArray({
     control,
     name: 'hours',
   });
 
+  const images = useFieldArray({
+    control,
+    name: 'images',
+  });
+
   watch('googlePlaceId');
+  watch('images');
 
   useEffect(() => {
     onDirty(isDirty);
   }, [onDirty, isDirty]);
 
-  const handleAddMoreHours = () => append(DEFAULT_HOURS);
+  const handleAddMoreHours = () => hours.append(DEFAULT_HOURS);
 
-  const handleRemoveClick = (index: number) => remove(index);
+  const handleRemoveClick = (index: number) => hours.remove(index);
 
   const handleAutocompleteChange = async (place: Place) => {
     if (place.place_id) {
       const address = await getPlaceAddress(place.place_id);
-      setValue('address', address);
+      setValue('address', address, SET_VALUE_OPTIONS);
     } else {
-      setValue('address', { street: '', city: '', zipCode: '', state: '' });
+      setValue(
+        'address',
+        { street: '', city: '', zipCode: '', state: '' },
+        SET_VALUE_OPTIONS,
+      );
     }
 
-    setValue('googlePlaceId', place.place_id);
-    setValue('name', place.name);
-    setValue('location.latitude', place.geometry.location.lat);
-    setValue('location.longitude', place.geometry.location.lng);
+    setValue('googlePlaceId', place.place_id, SET_VALUE_OPTIONS);
+    setValue('name', place.name, SET_VALUE_OPTIONS);
+
+    setValue(
+      'location.latitude',
+      place.geometry.location.lat,
+      SET_VALUE_OPTIONS,
+    );
+
+    setValue(
+      'location.longitude',
+      place.geometry.location.lng,
+      SET_VALUE_OPTIONS,
+    );
+  };
+
+  const handleImagesChange = (newImages: ImageType[]) => {
+    const newImagesWithoutIds = newImages.map(({ fileName, caption }) => ({
+      fileName,
+      caption,
+    }));
+
+    setValue('images', newImagesWithoutIds, SET_VALUE_OPTIONS);
   };
 
   return (
@@ -162,7 +204,7 @@ export default function StudySpotForm({
 
         <FormSectionHeader label="Hours of Operation" />
 
-        {fields.map((field, index) => (
+        {hours.fields.map((field, index) => (
           <HoursInput
             key={field.id}
             control={control}
@@ -177,6 +219,11 @@ export default function StudySpotForm({
         </Button>
 
         <AmenitiesInput control={control} />
+
+        <ImagesInput
+          images={images.fields}
+          onImagesChange={handleImagesChange}
+        />
         {children}
       </Stack>
     </form>
