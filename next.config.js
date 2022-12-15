@@ -3,7 +3,7 @@ module.exports = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'study-spots-images.nyc3.digitaloceanspaces.com',
+        hostname: 'study-spot-images.sfo3.digitaloceanspaces.com',
         pathname: '/**',
       },
     ],
